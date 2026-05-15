@@ -10,6 +10,20 @@ _BASE_URL = "https://api.elevenlabs.io/v1"
 _VOICE_ID = "JBFqnCBsd6RMkjVDRZzb"  # Rachel voice
 
 
+async def speech_to_text(audio_bytes: bytes, filename: str = "recording.webm") -> str:
+    if not _API_KEY:
+        raise RuntimeError("ELEVENLABS_API_KEY not configured")
+    async with httpx.AsyncClient(timeout=120.0) as client:
+        response = await client.post(
+            f"{_BASE_URL}/speech-to-text",
+            headers={"xi-api-key": _API_KEY},
+            files={"file": (filename, audio_bytes, "audio/webm")},
+            data={"model_id": "scribe_v1"},
+        )
+        response.raise_for_status()
+        return response.json().get("text", "")
+
+
 async def text_to_speech(text: str) -> bytes:
     print("text to speach call with api", _API_KEY)
     if not _API_KEY:

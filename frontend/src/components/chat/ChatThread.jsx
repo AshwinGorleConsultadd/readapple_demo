@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import ChatBubble from './ChatBubble'
 import DoctorSuggestionCard from './DoctorSuggestionCard'
+import AppointmentChatCard from './AppointmentChatCard'
 import TypingIndicator from './TypingIndicator'
 
 function ToolResultCard({ tool_used, tool_result, onBookDoctor }) {
@@ -16,18 +17,27 @@ function ToolResultCard({ tool_used, tool_result, onBookDoctor }) {
     )
   }
 
-  if (tool_used === 'book_appointment' && tool_result.booked) {
-    return (
-      <div className="bg-green-50 border border-green-100 rounded-2xl px-4 py-3 text-sm text-green-700">
-        ✓ Appointment confirmed with {tool_result.doctor_name} on {tool_result.date} at {tool_result.time}
-        {tool_result.meet_link && (
-          <a href={tool_result.meet_link} target="_blank" rel="noreferrer"
-            className="block mt-1 text-[#E24B4A] underline text-xs">
-            Join Google Meet
-          </a>
-        )}
-      </div>
-    )
+  if (tool_used === 'book_appointment') {
+    if (tool_result.booked) {
+      return (
+        <div className="bg-green-50 border border-green-100 rounded-2xl px-4 py-3 text-sm text-green-700">
+          ✓ Appointment confirmed with {tool_result.doctor_name} on {tool_result.date} at {tool_result.time}
+          {tool_result.meet_link && (
+            <a href={tool_result.meet_link} target="_blank" rel="noreferrer"
+              className="block mt-1 text-[#E24B4A] underline text-xs">
+              Join Google Meet
+            </a>
+          )}
+        </div>
+      )
+    }
+    if (tool_result.conflict) {
+      return (
+        <div className="bg-orange-50 border border-orange-100 rounded-2xl px-4 py-3 text-sm text-orange-700">
+          ⚠️ Slot taken — you already have an appointment with {tool_result.conflicting_doctor} on {tool_result.date} at {tool_result.time}. Please pick a different time.
+        </div>
+      )
+    }
   }
 
   if (tool_used === 'cancel_appointment') {
@@ -40,6 +50,16 @@ function ToolResultCard({ tool_used, tool_result, onBookDoctor }) {
         {tool_result.cancelled
           ? `✗ Appointment with ${tool_result.doctor_name} on ${tool_result.date} at ${tool_result.time} cancelled.`
           : tool_result.message || 'Could not find that appointment.'}
+      </div>
+    )
+  }
+
+  if (tool_used === 'get_appointments' && tool_result.appointments?.length > 0) {
+    return (
+      <div className="space-y-2">
+        {tool_result.appointments.map((appt) => (
+          <AppointmentChatCard key={appt._id} appointment={appt} />
+        ))}
       </div>
     )
   }

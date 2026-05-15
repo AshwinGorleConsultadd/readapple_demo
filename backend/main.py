@@ -5,6 +5,7 @@ from contextlib import asynccontextmanager
 from database.connection import connect_db, close_db
 from routers import conversation, appointments, journal, profile, auth
 from routers import dockters
+from routers import conversation_analysis
 
 logging.basicConfig(
     level=logging.INFO,
@@ -40,6 +41,7 @@ app.include_router(journal.router)
 app.include_router(profile.router)
 app.include_router(auth.router)
 app.include_router(dockters.router)
+app.include_router(conversation_analysis.router)
 
 
 @app.get("/")

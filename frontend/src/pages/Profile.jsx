@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import PageHeader from '../components/layout/PageHeader'
 import ProfileCard from '../components/profile/ProfileCard'
 import { getProfile } from '../api/profile'
 
 export default function Profile() {
+  const navigate = useNavigate()
   const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
 
@@ -23,7 +25,16 @@ export default function Profile() {
             <div className="w-8 h-8 border-2 border-[#E24B4A] border-t-transparent rounded-full animate-spin" />
           </div>
         ) : (
-          <ProfileCard profile={profile} />
+          <>
+            <ProfileCard profile={profile} />
+            <button
+              onClick={() => navigate('/patient-notes')}
+              className="w-full mt-3 py-3 px-4 bg-white border border-gray-200 rounded-xl flex items-center justify-between text-sm font-medium text-gray-700"
+            >
+              <span className="flex items-center gap-2">📋 My Consultation Notes</span>
+              <span className="text-gray-400">→</span>
+            </button>
+          </>
         )}
       </div>
     </div>

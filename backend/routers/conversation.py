@@ -9,10 +9,12 @@ from tools.search_doctors import SEARCH_DOCTORS_TOOL, execute_search_doctors
 from tools.log_journal import LOG_JOURNAL_TOOL, execute_log_journal
 from tools.book_appointment import BOOK_APPOINTMENT_TOOL, execute_book_appointment
 from tools.cancel_appointment import CANCEL_APPOINTMENT_TOOL, execute_cancel_appointment
+from tools.get_patient_notes import GET_PATIENT_NOTES_TOOL, execute_get_patient_notes
+from tools.get_appointments import GET_APPOINTMENTS_TOOL, execute_get_appointments
 
 router = APIRouter(prefix="/conversation", tags=["conversation"])
 
-ALL_TOOLS = [SEARCH_DOCTORS_TOOL, LOG_JOURNAL_TOOL, BOOK_APPOINTMENT_TOOL, CANCEL_APPOINTMENT_TOOL]
+ALL_TOOLS = [SEARCH_DOCTORS_TOOL, LOG_JOURNAL_TOOL, BOOK_APPOINTMENT_TOOL, CANCEL_APPOINTMENT_TOOL, GET_PATIENT_NOTES_TOOL, GET_APPOINTMENTS_TOOL]
 
 
 async def _load_context(db):
@@ -67,6 +69,10 @@ async def _process_message(user_text: str, db) -> ConversationResponse:
             return await execute_book_appointment(args, patient_id)
         if tool_name == "cancel_appointment":
             return await execute_cancel_appointment(args, patient_id)
+        if tool_name == "get_patient_notes":
+            return await execute_get_patient_notes(args, patient_id)
+        if tool_name == "get_appointments":
+            return await execute_get_appointments(args, patient_id)
         return {"error": f"Unknown tool: {tool_name}"}
 
     ai_response = await send_message(

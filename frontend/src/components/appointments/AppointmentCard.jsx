@@ -1,8 +1,9 @@
-import axios from 'axios'
 import api from '../../api'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 export default function AppointmentCard({ appointment, onDelete }) {
+  const navigate = useNavigate()
   const [deleting, setDeleting] = useState(false)
   const isPast = new Date(appointment.date) < new Date()
   const isCancelled = appointment.status === 'cancelled'
@@ -58,6 +59,14 @@ export default function AppointmentCard({ appointment, onDelete }) {
           </button>
         </div>
       </div>
+      {!isCancelled && (
+        <button
+          onClick={() => navigate(`/conversation/${appointment._id}`)}
+          className="mt-3 w-full py-2 px-4 bg-red-50 border border-red-200 text-[#E24B4A] text-sm font-medium rounded-xl flex items-center justify-center gap-2 active:bg-red-100"
+        >
+          🎙️ Start Conversation Recording
+        </button>
+      )}
       {appointment.google_meet_link && !isPast && (
         <a
           href={appointment.google_meet_link}

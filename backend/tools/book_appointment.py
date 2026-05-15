@@ -23,6 +23,27 @@ async def execute_book_appointment(params: dict, patient_id: str) -> dict:
     reason = params.get("reason", "Medical consultation")
 
     db = get_db()
+
+    # Check for an existing non-cancelled appointment at the same date and time
+    conflict = await db["appointments"].find_one({
+        "patient_id": ObjectId(patient_id),
+        "date": date_str,
+        "time": time_str,
+        "status": {"$ne": "cancelled"},
+    })
+    if conflict:
+        return {
+            "booked": False,
+            "conflict": True,
+            "conflicting_doctor": conflict.get("doctor_name", "another doctor"),
+            "date": date_str,
+            "time": time_str,
+            "message": (
+                f"You already have an appointment with {conflict.get('doctor_name', 'another doctor')} "
+                f"on {date_str} at {time_str}. Please choose a different time."
+            ),
+        }
+
     doctor = await db["doctors"].find_one(
         {"name": {"$regex": doctor_name, "$options": "i"}}
     )

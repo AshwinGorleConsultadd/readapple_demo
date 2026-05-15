@@ -159,6 +159,15 @@ export default function DockterProfile() {
                 </div>
               </div>
             )}
+
+            {/* Clinical Notes */}
+            <button
+              onClick={() => navigate(`/doctor-notes/${doctor._id}`)}
+              className="w-full py-3 px-4 bg-white border border-teal-200 rounded-xl flex items-center justify-between text-sm font-medium text-teal-700"
+            >
+              <span className="flex items-center gap-2">🏥 Clinical Notes</span>
+              <span className="text-teal-400">→</span>
+            </button>
           </div>
         )}
       </div>
