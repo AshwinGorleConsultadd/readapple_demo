@@ -12,6 +12,11 @@ export default function Journal() {
     fetchEntries()
   }, [fetchEntries])
 
+  const handleDelete = (entryId) => {
+    // Refresh the list after deletion
+    fetchEntries()
+  }
+
   const addButton = (
     <button
       onClick={() => setShowModal(true)}
@@ -42,7 +47,7 @@ export default function Journal() {
           </div>
         ) : (
           <div className="space-y-3">
-            {entries.map((entry) => <JournalEntryCard key={entry._id} entry={entry} />)}
+            {entries.map((entry) => <JournalEntryCard key={entry._id} entry={entry} onDelete={handleDelete} />)}
           </div>
         )}
       </div>

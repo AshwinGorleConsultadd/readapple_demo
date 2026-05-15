@@ -1,6 +1,27 @@
-export default function AppointmentCard({ appointment }) {
+import axios from 'axios'
+import api from '../../api'
+import { useState } from 'react'
+
+export default function AppointmentCard({ appointment, onDelete }) {
+  const [deleting, setDeleting] = useState(false)
   const isPast = new Date(appointment.date) < new Date()
   const isCancelled = appointment.status === 'cancelled'
+
+  const handleDelete = async () => {
+    if (!confirm('Are you sure you want to delete this appointment?')) return
+    
+    setDeleting(true)
+    try {
+      await api.delete(`/appointments/${appointment._id}`)
+      if (onDelete) onDelete(appointment._id)
+    } catch (err) {
+      console.error('Failed to delete appointment:', err)
+      alert('Failed to delete appointment')
+    } finally {
+      setDeleting(false)
+    }
+  }
+
   return (
     <div className={`bg-white rounded-2xl border shadow-sm p-4 ${isCancelled ? 'border-gray-100 opacity-50' : isPast ? 'border-gray-100 opacity-75' : 'border-gray-100'}`}>
       <div className="flex items-start gap-3">
@@ -17,13 +38,25 @@ export default function AppointmentCard({ appointment }) {
           </p>
           <p className="text-gray-400 text-xs mt-0.5 truncate">{appointment.reason}</p>
         </div>
-        <span className={`text-xs px-2 py-1 rounded-full font-medium ${
-          isCancelled ? 'bg-orange-50 text-orange-500'
-          : isPast ? 'bg-gray-100 text-gray-400'
-          : 'bg-green-50 text-green-600'
-        }`}>
-          {isCancelled ? 'Cancelled' : isPast ? 'Past' : 'Upcoming'}
-        </span>
+        <div className="flex flex-col items-end gap-2 shrink-0">
+          <span className={`text-xs px-2 py-1 rounded-full font-medium ${
+            isCancelled ? 'bg-orange-50 text-orange-500'
+            : isPast ? 'bg-gray-100 text-gray-400'
+            : 'bg-green-50 text-green-600'
+          }`}>
+            {isCancelled ? 'Cancelled' : isPast ? 'Past' : 'Upcoming'}
+          </span>
+          <button
+            onClick={handleDelete}
+            disabled={deleting}
+            className="text-gray-400 hover:text-red-500 transition-colors disabled:opacity-50 p-1"
+            title="Delete appointment"
+          >
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+          </button>
+        </div>
       </div>
       {appointment.google_meet_link && !isPast && (
         <a

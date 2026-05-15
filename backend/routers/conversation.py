@@ -1,10 +1,10 @@
 import base64
-from fastapi import APIRouter, UploadFile, File, HTTPException
+from fastapi import APIRouter, HTTPException
 from datetime import datetime
 from database.connection import get_db
 from database.models import ConversationMessageRequest, ConversationResponse
 from services.gemini_service import send_message
-from services.elevenlabs_service import speech_to_text, text_to_speech
+from services.elevenlabs_service import text_to_speech
 from tools.search_doctors import SEARCH_DOCTORS_TOOL, execute_search_doctors
 from tools.log_journal import LOG_JOURNAL_TOOL, execute_log_journal
 from tools.book_appointment import BOOK_APPOINTMENT_TOOL, execute_book_appointment
@@ -110,18 +110,6 @@ async def send_text_message(body: ConversationMessageRequest):
     db = get_db()
     return await _process_message(body.user_message, db)
 
-
-@router.post("/audio-message", response_model=ConversationResponse)
-async def send_audio_message(audio: UploadFile = File(...)):
-    audio_bytes = await audio.read()
-    try:
-        user_text = await speech_to_text(audio_bytes)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Speech-to-text failed: {str(e)}")
-    if not user_text or user_text.startswith("["):
-        raise HTTPException(status_code=500, detail="Could not transcribe audio.")
-    db = get_db()
-    return await _process_message(user_text, db)
 
 
 @router.get("/greeting")

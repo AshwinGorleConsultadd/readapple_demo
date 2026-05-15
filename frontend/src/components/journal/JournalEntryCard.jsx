@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import api from '../../api'
 
 function PainBadge({ level }) {
   if (!level && level !== 0) return null
@@ -6,10 +7,26 @@ function PainBadge({ level }) {
   return <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${color}`}>Pain {level}/10</span>
 }
 
-export default function JournalEntryCard({ entry }) {
+export default function JournalEntryCard({ entry, onDelete }) {
   const [expanded, setExpanded] = useState(false)
+  const [deleting, setDeleting] = useState(false)
   const p = entry.parsed_entry || {}
   const dateStr = new Date(entry.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })
+
+  const handleDelete = async () => {
+    if (!confirm('Are you sure you want to delete this journal entry?')) return
+    
+    setDeleting(true)
+    try {
+      await api.delete(`/journal/${entry._id}`)
+      if (onDelete) onDelete(entry._id)
+    } catch (err) {
+      console.error('Failed to delete journal entry:', err)
+      alert('Failed to delete journal entry')
+    } finally {
+      setDeleting(false)
+    }
+  }
 
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
@@ -32,14 +49,26 @@ export default function JournalEntryCard({ entry }) {
             )}
           </div>
         </div>
-        <button
-          onClick={() => setExpanded((e) => !e)}
-          className="text-gray-300 active:text-gray-500 transition-colors shrink-0 mt-0.5"
-        >
-          <svg className={`w-4 h-4 transition-transform ${expanded ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-          </svg>
-        </button>
+        <div className="flex flex-col items-end gap-2 shrink-0">
+          <button
+            onClick={() => setExpanded((e) => !e)}
+            className="text-gray-300 active:text-gray-500 transition-colors shrink-0"
+          >
+            <svg className={`w-4 h-4 transition-transform ${expanded ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          <button
+            onClick={handleDelete}
+            disabled={deleting}
+            className="text-gray-400 hover:text-red-500 transition-colors disabled:opacity-50 p-1"
+            title="Delete entry"
+          >
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+          </button>
+        </div>
       </div>
       {expanded && (
         <div className="mt-3 pt-3 border-t border-gray-50 space-y-1">

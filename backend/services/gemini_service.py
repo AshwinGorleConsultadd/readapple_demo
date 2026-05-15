@@ -1,8 +1,11 @@
 import os
 import json
+import logging
 from pathlib import Path
 import google.generativeai as genai
 from dotenv import load_dotenv
+
+logger = logging.getLogger(__name__)
 
 load_dotenv(Path(__file__).parent.parent / ".env")
 
@@ -34,13 +37,15 @@ Your capabilities:
 2. Suggest relevant doctors when patient describes a health problem (use search_doctors tool)
 3. Book appointments when patient confirms they want one (use book_appointment tool)
 4. Log journal entries when patient wants to record their health update (use log_journal tool)
+5. If user ask you can sumerize his journal in short comprehensive way.
 
 Rules:
 - Keep responses SHORT — max 2-3 sentences. This is voice output so brevity is critical.
 - Always be proactive. If journal shows recurring back pain, ask about it.
 - If user's intent is unclear, ask a clarifying question before taking action.
 - When showing doctors, call search_doctors tool. The frontend will render the list.
-- When booking, always confirm doctor name, date and time before calling book_appointment tool.
+- For compound requests like "cancel X and book Y": call BOTH tools in a single response turn without asking for intermediate confirmation. Execute all requested actions back-to-back.
+- Only ask for clarification if critical information (doctor name, date, time) is genuinely missing from the user's message.
 - Never make up information. If unsure, ask.
 - Respond only in plain text — no markdown, no bullet points. This is spoken aloud."""
 
@@ -147,8 +152,15 @@ async def send_message(
     all_tool_results = []  # accumulates every tool call across all turns
     max_turns = 6          # guard against infinite loops
 
-    for _ in range(max_turns):
+    for turn in range(max_turns):
         calls_this_turn = _extract_all_tool_calls(response)
+        text_this_turn = _extract_text(response)
+        logger.info(
+            "[Gemini] turn=%d tool_calls=%s text_preview=%r",
+            turn + 1,
+            [c[0] for c in calls_this_turn],
+            text_this_turn[:120] if text_this_turn else "",
+        )
         if not calls_this_turn or not tool_executor:
             break
 
@@ -156,6 +168,7 @@ async def send_message(
         response_parts = []
         for tool_name, tool_args in calls_this_turn:
             tool_result = await tool_executor(tool_name, tool_args)
+            logger.info("[Gemini] tool=%s args=%s result=%s", tool_name, tool_args, tool_result)
             all_tool_results.append({"tool_used": tool_name, "tool_result": tool_result})
             response_parts.append(
                 genai.protos.Part(
@@ -172,6 +185,7 @@ async def send_message(
         )
 
     reply_text = _extract_text(response)
+    logger.info("[Gemini] final reply (total tools=%d): %r", len(all_tool_results), reply_text[:200])
 
     if all_tool_results:
         return {

@@ -10,6 +10,11 @@ export default function Appointments() {
     fetchAppointments()
   }, [fetchAppointments])
 
+  const handleDelete = (appointmentId) => {
+    // Refresh the list after deletion
+    fetchAppointments()
+  }
+
   const upcoming = appointments.filter((a) => new Date(a.date) >= new Date())
   const past = appointments.filter((a) => new Date(a.date) < new Date())
 
@@ -35,7 +40,7 @@ export default function Appointments() {
               <div>
                 <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Upcoming</h3>
                 <div className="space-y-3">
-                  {upcoming.map((a) => <AppointmentCard key={a._id} appointment={a} />)}
+                  {upcoming.map((a) => <AppointmentCard key={a._id} appointment={a} onDelete={handleDelete} />)}
                 </div>
               </div>
             )}
@@ -43,7 +48,7 @@ export default function Appointments() {
               <div>
                 <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Past</h3>
                 <div className="space-y-3">
-                  {past.map((a) => <AppointmentCard key={a._id} appointment={a} />)}
+                  {past.map((a) => <AppointmentCard key={a._id} appointment={a} onDelete={handleDelete} />)}
                 </div>
               </div>
             )}

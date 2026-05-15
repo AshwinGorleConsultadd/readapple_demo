@@ -91,3 +91,17 @@ async def journal_summary():
         available_tools=[],
     )
     return {"summary": model_response["reply_text"], "entry_count": len(entries)}
+
+
+@router.delete("/{entry_id}")
+async def delete_journal_entry(entry_id: str):
+    db = get_db()
+    try:
+        result = await db["journal"].delete_one({"_id": ObjectId(entry_id)})
+        if result.deleted_count == 0:
+            raise HTTPException(status_code=404, detail="Journal entry not found")
+        return {"deleted": True, "entry_id": entry_id}
+    except Exception as e:
+        if "404" in str(e):
+            raise
+        raise HTTPException(status_code=400, detail="Invalid entry ID")

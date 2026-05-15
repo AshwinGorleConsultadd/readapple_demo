@@ -8,15 +8,22 @@ export default function Dockters() {
   const [query, setQuery] = useState('')
   const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
-    let mounted = true
+  const fetchDoctors = () => {
     setLoading(true)
     client.get('/api/dockters')
-      .then((res) => { if (mounted) setDoctors(res.data) })
+      .then((res) => setDoctors(res.data || []))
       .catch(console.error)
-      .finally(() => { if (mounted) setLoading(false) })
-    return () => { mounted = false }
+      .finally(() => setLoading(false))
+  }
+
+  useEffect(() => {
+    fetchDoctors()
   }, [])
+
+  const handleDelete = (doctorId) => {
+    // Refresh the list after deletion
+    fetchDoctors()
+  }
 
   const filtered = doctors.filter((d) =>
     (d.name || '').toLowerCase().includes(query.toLowerCase()) ||
@@ -50,7 +57,7 @@ export default function Dockters() {
           </div>
         ) : (
           <div className="space-y-3">
-            {filtered.map((d) => <DockterCard key={d._id} dockter={d} />)}
+            {filtered.map((d) => <DockterCard key={d._id} dockter={d} onDelete={handleDelete} />)}
           </div>
         )}
       </div>

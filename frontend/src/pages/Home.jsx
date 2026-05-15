@@ -1,10 +1,12 @@
-import { useEffect, useCallback, useState } from 'react'
+import { useEffect, useCallback, useState, useRef } from 'react'
 import PageHeader from '../components/layout/PageHeader'
 import ChatThread from '../components/chat/ChatThread'
 import VoiceButton from '../components/voice/VoiceButton'
-import { useConversation } from '../hooks/useConversation'
 import { useVoice } from '../hooks/useVoice'
 import { sendMessage } from '../api/conversation'
+
+// module-level flag so greeting audio plays at most once per browser session
+let greetingAudioPlayed = false
 
 function SpeakerToggle({ enabled, onToggle }) {
   return (
@@ -31,7 +33,9 @@ function SpeakerToggle({ enabled, onToggle }) {
   )
 }
 
-export default function Home() {
+export default function Home({ conversation, greetingData }) {
+  const { messages, isLoading, handleVoiceResponse, addMessage } = conversation
+
   const [voiceEnabled, setVoiceEnabled] = useState(
     () => localStorage.getItem('redapple_voice') !== 'off'
   )
@@ -45,9 +49,6 @@ export default function Home() {
     })
   }, [])
 
-  const { messages, isLoading, loadGreeting, handleVoiceResponse, addMessage } =
-    useConversation()
-
   const handleVoiceResponseCallback = useCallback(
     (data) => {
       handleVoiceResponse(data)
@@ -60,12 +61,12 @@ export default function Home() {
   const { isListening, isAISpeaking, transcript, startListening, stopListening, playAudioReply, cancelSpeaking } =
     useVoice({ onResponse: handleVoiceResponseCallback })
 
+  // play greeting audio once — even if Home remounts (e.g. tab switch)
   useEffect(() => {
-    loadGreeting().then((data) => {
-      if (data && voiceEnabled) playAudioReply(data.reply_audio_base64, data.reply_text)
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    if (!greetingData || greetingAudioPlayed) return
+    greetingAudioPlayed = true
+    if (voiceEnabled) playAudioReply(greetingData.reply_audio_base64, greetingData.reply_text)
+  }, [greetingData]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleBookDoctor = useCallback(
     async (doctor) => {

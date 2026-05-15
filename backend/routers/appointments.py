@@ -106,3 +106,25 @@ async def cancel_appointment(appointment_id: str):
             pass
 
     return {"cancelled": True, "appointment_id": appointment_id}
+
+
+@router.delete("/{appointment_id}")
+async def delete_appointment(appointment_id: str):
+    db = get_db()
+    appointment = await db["appointments"].find_one({"_id": ObjectId(appointment_id)})
+    if not appointment:
+        raise HTTPException(status_code=404, detail="Appointment not found")
+
+    # Delete from Google Calendar if event exists
+    event_id = appointment.get("google_calendar_event_id")
+    if event_id:
+        try:
+            from services.calendar_service import get_calendar_service
+            service = get_calendar_service()
+            service.events().delete(calendarId="primary", eventId=event_id).execute()
+        except Exception:
+            pass
+
+    # Delete from database
+    await db["appointments"].delete_one({"_id": ObjectId(appointment_id)})
+    return {"deleted": True, "appointment_id": appointment_id}

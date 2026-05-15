@@ -6,7 +6,7 @@ from services.calendar_service import create_calendar_event
 
 BOOK_APPOINTMENT_TOOL = {
     "name": "book_appointment",
-    "description": "Book a medical appointment with a doctor. Call this only after confirming doctor name, date, and time with the patient.",
+    "description": "Book a medical appointment with a doctor. Call this as soon as the patient provides a doctor name, date, and time — even as part of a compound request like 'cancel X and book Y'. Do NOT ask for additional confirmation if the details are already in the message.",
     "parameters": {
         "doctor_name": "full name of the doctor",
         "date": "appointment date in YYYY-MM-DD format",

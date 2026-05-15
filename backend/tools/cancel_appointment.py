@@ -6,10 +6,8 @@ CANCEL_APPOINTMENT_TOOL = {
     "name": "cancel_appointment",
     "description": (
         "Cancel an existing appointment for the patient. "
-        "IMPORTANT: Before calling this tool you MUST confirm the exact appointment with the patient — "
-        "tell them the doctor name, date, and time, and ask them to confirm. "
-        "If the patient has not specified a doctor or date, ask them which appointment they want to cancel. "
-        "Only call this tool once the patient has clearly confirmed."
+        "Call this as soon as the patient names a doctor or date to cancel — even as part of a compound request like 'cancel X and book Y'. "
+        "Only ask for clarification if the patient provides zero identifying information about which appointment to cancel."
     ),
     "parameters": {
         "doctor_name": "full or partial name of the doctor whose appointment to cancel",
