@@ -29,16 +29,16 @@ export default function PatientNoteCard({ note, onDelete }) {
 
   return (
     <div
-      className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 cursor-pointer hover:border-[#E24B4A] hover:shadow-md transition-all active:scale-[0.99]"
+      className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 cursor-pointer hover:border-[#00B5C8] hover:shadow-md transition-all active:scale-[0.99]"
       onClick={() => navigate(`/patient-notes/${note._id}`)}
     >
       <div className="flex items-start gap-3">
-        <div className="w-10 h-10 rounded-full bg-[#E24B4A] flex items-center justify-center text-white font-bold text-sm shrink-0">
+        <div className="w-10 h-10 rounded-full bg-[#00B5C8] flex items-center justify-center text-white font-bold text-sm shrink-0">
           {note.doctor_name?.split(' ').slice(-1)[0]?.slice(0, 2).toUpperCase() || 'DR'}
         </div>
         <div className="flex-1 min-w-0">
           <p className="font-semibold text-gray-900 text-sm">{note.doctor_name}</p>
-          <p className="text-[#E24B4A] text-xs">{date}</p>
+          <p className="text-[#00B5C8] text-xs">{date}</p>
           {n.summary && (
             <p className="text-gray-400 text-xs mt-1 line-clamp-2">{n.summary}</p>
           )}
@@ -57,7 +57,7 @@ export default function PatientNoteCard({ note, onDelete }) {
       {(medCount > 0 || exCount > 0) && (
         <div className="mt-3 flex gap-2">
           {medCount > 0 && (
-            <span className="text-xs bg-red-50 text-[#E24B4A] px-2 py-0.5 rounded-full">
+            <span className="text-xs bg-cyan-50 text-[#00B5C8] px-2 py-0.5 rounded-full">
               💊 {medCount} med{medCount > 1 ? 's' : ''}
             </span>
           )}

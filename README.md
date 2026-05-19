@@ -10,6 +10,10 @@ python scripts/seed_patient.py
 uvicorn main:app --reload
 ```
 
+start
+cd /Users/consultadd/Desktop/My\ project/Demo/redapple/backend && source venv/bin/activate && uvicorn main:app --reload --port 8000
+
+
 ## Frontend
 ```bash
 cd frontend

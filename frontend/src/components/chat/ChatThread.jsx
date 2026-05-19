@@ -24,7 +24,7 @@ function ToolResultCard({ tool_used, tool_result, onBookDoctor }) {
           ✓ Appointment confirmed with {tool_result.doctor_name} on {tool_result.date} at {tool_result.time}
           {tool_result.meet_link && (
             <a href={tool_result.meet_link} target="_blank" rel="noreferrer"
-              className="block mt-1 text-[#E24B4A] underline text-xs">
+              className="block mt-1 text-[#00B5C8] underline text-xs">
               Join Google Meet
             </a>
           )}
@@ -93,7 +93,7 @@ export default function ChatThread({ messages, isLoading, onBookDoctor }) {
     <div className="flex-1 overflow-y-auto py-2 space-y-1">
       {messages.map((msg) => (
         <div key={msg.id}>
-          <ChatBubble role={msg.role} content={msg.content} />
+          <ChatBubble role={msg.role} content={msg.content} streaming={msg.streaming} />
           {getToolCalls(msg).length > 0 && (
             <div className="px-4 pt-1 space-y-2">
               {getToolCalls(msg).map((tc, i) => (

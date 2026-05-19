@@ -2,7 +2,9 @@ import { useEffect, useCallback, useState, useRef } from 'react'
 import PageHeader from '../components/layout/PageHeader'
 import ChatThread from '../components/chat/ChatThread'
 import VoiceButton from '../components/voice/VoiceButton'
+import StaticModeToggle from '../components/StaticModeToggle'
 import { useVoice } from '../hooks/useVoice'
+import { useStaticConversation } from '../hooks/useStaticConversation'
 import { sendMessage } from '../api/conversation'
 
 // module-level flag so greeting audio plays at most once per browser session
@@ -15,7 +17,7 @@ function SpeakerToggle({ enabled, onToggle }) {
       title={enabled ? 'Voice responses ON — tap to mute' : 'Voice responses OFF — tap to unmute'}
       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
         enabled
-          ? 'bg-[#E24B4A] text-white'
+          ? 'bg-[#00B5C8] text-white'
           : 'bg-gray-100 text-gray-400'
       }`}
     >
@@ -34,11 +36,14 @@ function SpeakerToggle({ enabled, onToggle }) {
 }
 
 export default function Home({ conversation, greetingData }) {
-  const { messages, isLoading, handleVoiceResponse, addMessage } = conversation
+  const { messages, isLoading, handleVoiceResponse, addMessage, clearMessages } = conversation
 
   const [voiceEnabled, setVoiceEnabled] = useState(
     () => localStorage.getItem('redapple_voice') !== 'off'
   )
+  const [isStaticMode, setIsStaticMode] = useState(false)
+  // Ref so async callbacks can read current static mode without stale closure
+  const isStaticModeRef = useRef(false)
 
   const toggleVoice = useCallback(() => {
     setVoiceEnabled((prev) => {
@@ -49,8 +54,20 @@ export default function Home({ conversation, greetingData }) {
     })
   }, [])
 
+  const {
+    isStaticLoading,
+    waitingForUser,
+    startStaticConversation,
+    handleUserSpoke,
+    stopStaticConversation,
+  } = useStaticConversation({ addMessage, clearMessages, voiceEnabled })
+
+  // Keep ref in sync so the async voice callback can check mode without stale closure
+  useEffect(() => { isStaticModeRef.current = isStaticMode }, [isStaticMode])
+
   const handleVoiceResponseCallback = useCallback(
     (data) => {
+      if (isStaticModeRef.current) return // discard live AI response during static demo
       handleVoiceResponse(data)
       if (voiceEnabled) playAudioReply(data.reply_audio_base64, data.reply_text)
     },
@@ -63,13 +80,14 @@ export default function Home({ conversation, greetingData }) {
 
   // play greeting audio once — even if Home remounts (e.g. tab switch)
   useEffect(() => {
-    if (!greetingData || greetingAudioPlayed) return
+    if (!greetingData || greetingAudioPlayed || isStaticMode) return
     greetingAudioPlayed = true
     if (voiceEnabled) playAudioReply(greetingData.reply_audio_base64, greetingData.reply_text)
   }, [greetingData]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleBookDoctor = useCallback(
     async (doctor) => {
+      if (isStaticMode) return // no live booking from static mode
       const text = `Book an appointment with ${doctor.name}`
       addMessage('user', text)
       try {
@@ -84,29 +102,69 @@ export default function Home({ conversation, greetingData }) {
         addMessage('assistant', 'Sorry, something went wrong trying to book that appointment.')
       }
     },
-    [addMessage, playAudioReply, voiceEnabled]
+    [addMessage, playAudioReply, voiceEnabled, isStaticMode]
   )
 
-  const handleVoicePress = () => {
-    if (isAISpeaking) {
+  const handleToggleStaticMode = useCallback(() => {
+    if (isStaticMode) {
+      // Turn off — restore live mode
+      stopStaticConversation()
       cancelSpeaking()
-    } else if (isListening) {
-      stopListening()
+      clearMessages()
+      setIsStaticMode(false)
+      greetingAudioPlayed = false
     } else {
-      startListening()
+      // Turn on — start static demo
+      cancelSpeaking()
+      setIsStaticMode(true)
+      startStaticConversation()
+    }
+  }, [isStaticMode, startStaticConversation, stopStaticConversation, cancelSpeaking, clearMessages])
+
+  const handleVoicePress = () => {
+    if (isStaticMode) {
+      if (isListening) {
+        // User finished speaking — stop mic and advance script
+        stopListening()
+        handleUserSpoke()
+      } else if (!isStaticLoading && waitingForUser) {
+        startListening()
+      }
+    } else {
+      if (isAISpeaking) {
+        cancelSpeaking()
+      } else if (isListening) {
+        stopListening()
+      } else {
+        startListening()
+      }
     }
   }
 
+  const voiceButtonLabel = isStaticMode
+    ? (isListening ? 'Listening...' : waitingForUser ? 'Tap to Respond' : 'Please wait...')
+    : undefined
+
+  const isLoaderShowing = isStaticMode ? isStaticLoading : isLoading
+
   return (
     <div className="flex flex-col h-screen bg-white max-w-md mx-auto">
-      <PageHeader title="Redapple" right={<SpeakerToggle enabled={voiceEnabled} onToggle={toggleVoice} />} />
+      <PageHeader
+        title="Redapple"
+        right={
+          <div className="flex items-center gap-2">
+            <StaticModeToggle isStatic={isStaticMode} onToggle={handleToggleStaticMode} />
+            {!isStaticMode && <SpeakerToggle enabled={voiceEnabled} onToggle={toggleVoice} />}
+          </div>
+        }
+      />
       <ChatThread
         messages={messages}
-        isLoading={isLoading}
+        isLoading={isLoaderShowing}
         onBookDoctor={handleBookDoctor}
       />
       <div className="border-t border-gray-100 bg-white px-4 pt-3 pb-24">
-        {transcript && (
+        {!isStaticMode && transcript && (
           <div className="mb-3 bg-gray-50 rounded-xl px-4 py-2 text-sm text-gray-500 text-center">
             {transcript}
           </div>
@@ -114,9 +172,10 @@ export default function Home({ conversation, greetingData }) {
         <div className="flex justify-center">
           <VoiceButton
             isListening={isListening}
-            isAISpeaking={isAISpeaking}
+            isAISpeaking={isStaticMode ? false : isAISpeaking}
             onPress={handleVoicePress}
-            disabled={isLoading}
+            disabled={isStaticMode ? (isStaticLoading || (!waitingForUser && !isListening)) : isLoading}
+            customLabel={voiceButtonLabel}
           />
         </div>
       </div>

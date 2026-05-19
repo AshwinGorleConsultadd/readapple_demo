@@ -55,5 +55,7 @@ export function useConversation() {
     return data
   }, [addMessage])
 
-  return { messages, isLoading, loadGreeting, sendText, handleVoiceResponse, addMessage }
+  const clearMessages = useCallback(() => setMessages([]), [])
+
+  return { messages, isLoading, loadGreeting, sendText, handleVoiceResponse, addMessage, clearMessages }
 }

@@ -18,7 +18,7 @@ function BulletList({ items }) {
     <ul className="space-y-1">
       {items.map((item, i) => (
         <li key={i} className="flex items-start gap-2 text-sm text-gray-600">
-          <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#E24B4A] shrink-0" />
+          <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#00B5C8] shrink-0" />
           {item}
         </li>
       ))}
@@ -37,14 +37,14 @@ export default function PatientNoteDetail({ note }) {
       {/* Header */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-full bg-[#E24B4A] flex items-center justify-center text-white text-xl font-bold shrink-0">
+          <div className="w-14 h-14 rounded-full bg-[#00B5C8] flex items-center justify-center text-white text-xl font-bold shrink-0">
             {note.doctor_name?.split(' ').slice(-1)[0]?.slice(0, 2).toUpperCase() || 'DR'}
           </div>
           <div>
             <h2 className="text-lg font-bold text-gray-900">{note.doctor_name}</h2>
             <p className="text-gray-400 text-sm">{date}</p>
             {note.appointment_reason && (
-              <p className="text-[#E24B4A] text-xs mt-0.5">{note.appointment_reason}</p>
+              <p className="text-[#00B5C8] text-xs mt-0.5">{note.appointment_reason}</p>
             )}
           </div>
         </div>

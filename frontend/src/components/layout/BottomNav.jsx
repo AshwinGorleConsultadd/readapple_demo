@@ -59,7 +59,7 @@ export default function BottomNav() {
             end={tab.to === '/'}
             className={({ isActive }) =>
               `flex-1 flex flex-col items-center py-2 gap-0.5 text-xs font-medium transition-colors ${
-                isActive ? 'text-[#E24B4A]' : 'text-gray-400'
+                isActive ? 'text-[#00B5C8]' : 'text-gray-400'
               }`
             }
           >

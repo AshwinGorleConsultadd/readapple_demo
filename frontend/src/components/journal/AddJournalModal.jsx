@@ -54,7 +54,7 @@ export default function AddJournalModal({ onClose, onSave }) {
               onChange={(e) => setText(e.target.value)}
               placeholder="How are you feeling today? Describe any pain, sleep quality, mood..."
               rows={5}
-              className="w-full rounded-2xl border border-gray-200 p-4 text-sm text-gray-800 resize-none focus:outline-none focus:border-[#E24B4A]"
+              className="w-full rounded-2xl border border-gray-200 p-4 text-sm text-gray-800 resize-none focus:outline-none focus:border-[#00B5C8]"
             />
             <button
               onClick={handleSave}

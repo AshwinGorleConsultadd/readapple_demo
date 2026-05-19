@@ -1,6 +1,6 @@
 import WaveformAnimation from './WaveformAnimation'
 
-export default function VoiceButton({ isListening, isAISpeaking, onPress, disabled }) {
+export default function VoiceButton({ isListening, isAISpeaking, onPress, disabled, customLabel }) {
   const handleClick = () => {
     if (!disabled) onPress()
   }
@@ -32,7 +32,7 @@ export default function VoiceButton({ isListening, isAISpeaking, onPress, disabl
             <path d="M12 14a3 3 0 003-3V5a3 3 0 10-6 0v6a3 3 0 003 3zm5-3a5 5 0 01-10 0H5a7 7 0 0014 0h-2z" />
           </svg>
         </button>
-        <span className="text-xs text-[#E24B4A] font-medium">Listening...</span>
+        <span className="text-xs text-[#00B5C8] font-medium">Listening...</span>
       </div>
     )
   }
@@ -42,14 +42,14 @@ export default function VoiceButton({ isListening, isAISpeaking, onPress, disabl
       <button
         onClick={handleClick}
         disabled={disabled}
-        className="rounded-full bg-white border-2 border-[#E24B4A] flex items-center justify-center shadow-md active:scale-95 transition-all disabled:opacity-40"
+        className="rounded-full bg-white border-2 border-[#00B5C8] flex items-center justify-center shadow-md active:scale-95 transition-all disabled:opacity-40"
         style={{ width: 72, height: 72 }}
       >
-        <svg className="w-8 h-8 text-[#E24B4A]" viewBox="0 0 24 24" fill="currentColor">
+        <svg className="w-8 h-8 text-[#00B5C8]" viewBox="0 0 24 24" fill="currentColor">
           <path d="M12 14a3 3 0 003-3V5a3 3 0 10-6 0v6a3 3 0 003 3zm5-3a5 5 0 01-10 0H5a7 7 0 0014 0h-2z" />
         </svg>
       </button>
-      <span className="text-xs text-gray-400">Tap to speak</span>
+      <span className="text-xs text-gray-400">{customLabel || 'Tap to speak'}</span>
     </div>
   )
 }

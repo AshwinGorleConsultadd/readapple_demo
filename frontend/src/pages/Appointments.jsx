@@ -24,7 +24,7 @@ export default function Appointments() {
       <div className="flex-1 overflow-y-auto px-4 py-4 pb-24 max-w-md mx-auto w-full">
         {loading ? (
           <div className="flex items-center justify-center h-40">
-            <div className="w-8 h-8 border-2 border-[#E24B4A] border-t-transparent rounded-full animate-spin" />
+            <div className="w-8 h-8 border-2 border-[#00B5C8] border-t-transparent rounded-full animate-spin" />
           </div>
         ) : appointments.length === 0 ? (
           <div className="text-center py-16 text-gray-400">

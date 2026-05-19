@@ -29,7 +29,7 @@ export default function ProfileCard({ profile }) {
         <h3 className="font-semibold text-gray-700 mb-3">Health Conditions</h3>
         <div className="flex flex-wrap gap-2">
           {profile.health_conditions?.map((c) => (
-            <span key={c} className="bg-red-50 text-[#E24B4A] text-xs px-3 py-1 rounded-full font-medium">{c}</span>
+            <span key={c} className="bg-cyan-50 text-[#00B5C8] text-xs px-3 py-1 rounded-full font-medium">{c}</span>
           ))}
         </div>
       </div>

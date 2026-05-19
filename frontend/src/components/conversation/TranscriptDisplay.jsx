@@ -15,7 +15,7 @@ export default function TranscriptDisplay({ transcript, onChange, editable = fal
           onChange={(e) => onChange?.(e.target.value)}
           placeholder="Paste or type the conversation transcript here..."
           rows={8}
-          className="w-full text-sm text-gray-600 leading-relaxed resize-none border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-[#E24B4A]"
+          className="w-full text-sm text-gray-600 leading-relaxed resize-none border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-[#00B5C8]"
         />
       ) : (
         <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-wrap max-h-48 overflow-y-auto">

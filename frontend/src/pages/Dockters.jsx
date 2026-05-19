@@ -40,13 +40,13 @@ export default function Dockters() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search by name, specialty, or symptom..."
-            className="w-full rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm focus:outline-none focus:border-[#E24B4A]"
+            className="w-full rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm focus:outline-none focus:border-[#00B5C8]"
           />
         </div>
 
         {loading ? (
           <div className="flex items-center justify-center h-40">
-            <div className="w-8 h-8 border-2 border-[#E24B4A] border-t-transparent rounded-full animate-spin" />
+            <div className="w-8 h-8 border-2 border-[#00B5C8] border-t-transparent rounded-full animate-spin" />
           </div>
         ) : filtered.length === 0 ? (
           <div className="text-center py-16 text-gray-400">

@@ -28,12 +28,12 @@ export default function DockterCard({ dockter, onDelete }) {
       onClick={() => navigate(`/dockters/${dockter._id}`)}
     >
       <div className="flex items-start gap-3">
-        <div className="w-12 h-12 rounded-full bg-[#E24B4A] flex items-center justify-center text-white font-bold text-sm shrink-0">
+        <div className="w-12 h-12 rounded-full bg-[#00B5C8] flex items-center justify-center text-white font-bold text-sm shrink-0">
           {dockter.profile_image_placeholder || dockter.name?.slice(0, 2).toUpperCase()}
         </div>
         <div className="flex-1 min-w-0">
           <p className="font-semibold text-gray-900 text-sm">{dockter.name}</p>
-          <p className="text-[#E24B4A] text-xs font-medium">{dockter.specialty}</p>
+          <p className="text-[#00B5C8] text-xs font-medium">{dockter.specialty}</p>
           {dockter.rating && (
             <div className="flex items-center gap-1 mt-0.5">
               <span className="text-yellow-400 text-xs">{'★'.repeat(stars)}{'☆'.repeat(5 - stars)}</span>
