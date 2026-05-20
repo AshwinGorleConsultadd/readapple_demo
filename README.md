@@ -1,40 +1,106 @@
-# Redapple Demo — Setup
+# Redapple — Startup Guide
 
-## Backend
+## Prerequisites
+- Docker Desktop (running)
+- Python 3.11+
+- Node.js 18+
+
+---
+
+## Step 1 — Start MongoDB (Docker)
+
 ```bash
 cd backend
-pip install -r requirements.txt
-# Fill in API keys in .env
-python scripts/seed_doctors.py
-python scripts/seed_patient.py
-uvicorn main:app --reload
+docker compose up -d
 ```
 
-start
-cd /Users/consultadd/Desktop/My\ project/Demo/redapple/backend && source venv/bin/activate && uvicorn main:app --reload --port 8000
+Verify it's running:
+```bash
+docker ps
+```
+MongoDB will be available at `mongodb://localhost:27017`
 
+---
 
-## Frontend
+## Step 2 — Start Backend
+
+```bash
+cd backend
+```
+
+Create and activate virtual environment (first time only):
+```bash
+python -m venv venv
+```
+
+Activate:
+```bash
+# macOS / Linux
+source venv/bin/activate
+
+# Windows
+venv\Scripts\activate
+```
+
+Install dependencies (first time only):
+```bash
+pip install -r requirements.txt
+```
+
+Start the server:
+```bash
+uvicorn main:app --reload --port 8000
+```
+
+Backend runs at: `http://localhost:8000`
+API docs at: `http://localhost:8000/docs`
+
+---
+
+## Step 3 — Start Frontend
+
 ```bash
 cd frontend
-npm install
-# .env already has VITE_API_BASE_URL=http://localhost:8000
+npm install        # first time only
 npm run dev
 ```
 
-## Google Calendar (run once before demo)
-```
-Open http://localhost:8000/auth/google in browser and complete OAuth
+Frontend runs at: `http://localhost:5173`
+
+---
+
+## Step 4 — Seed Database (first time only)
+
+Open a new terminal with the venv active:
+```bash
+cd backend
+source venv/bin/activate
+python scripts/seed_doctors.py
+python scripts/seed_patient.py
 ```
 
-## API Keys needed (backend/.env)
-- `GEMINI_API_KEY` — Google AI Studio
-- `ELEVENLABS_API_KEY` — ElevenLabs dashboard
-- `GOOGLE_CALENDAR_CLIENT_ID` + `GOOGLE_CALENDAR_CLIENT_SECRET` — Google Cloud Console (Calendar API)
+---
 
-## Demo Scenarios
-1. **Greeting** — Open app, AI greets Ashwin referencing recent back pain
-2. **Voice journal** — "Let me log today's update" → speak → journal saved
-3. **Doctor search** — "My back is really hurting" → 3 doctor cards appear
-4. **Appointment booking** — "Book with Dr. Priya" → confirm date/time → booked
-5. **Health Q&A** — "What should I do about my anxiety" → AI references journal
+## Required API Keys (`backend/.env`)
+
+```
+GEMINI_API_KEY=
+ELEVENLABS_API_KEY=
+MONGODB_URL=mongodb://admin:password@localhost:27017
+DATABASE_NAME=redapple
+```
+
+---
+
+## Quick Start (all steps combined)
+
+```bash
+# Terminal 1 — MongoDB
+cd backend && docker compose up -d
+
+# Terminal 2 — Backend
+cd backend && source venv/bin/activate && uvicorn main:app --reload --port 8000
+
+# Terminal 3 — Frontend
+cd frontend && npm run dev
+```
