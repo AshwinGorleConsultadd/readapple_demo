@@ -1,71 +1,31 @@
 {
   "conversation": [
-
+    {
+      "step": 1,
+      "role": "ai",
+      "text": "Hey Ashwin! Welcome to RedApple — so glad you're here. This is your first time, so let me quickly introduce myself. I'm your RedApple health assistant, and I'm here to make managing your health as easy as just having a conversation. Think of me as your personal health companion who's always available. So here's what I can do for you — if you ever need to see a doctor, whether that's a chiropractor, a therapist, a general physician, a dentist, a nutritionist, a cardiologist, a physiotherapist, or a health coach — I'll find the right one for you and book the appointment, all through your voice. I'll also help you keep track of how you're feeling day to day through your health journal, so your doctors always have the full picture before they see you. And one more thing — once your doctor prescribes you medicines, I'll remind you when it's time to take them, so you never miss a dose. Basically I'm here to take the stress out of your healthcare so you can just focus on feeling better. Alright Ashwin, that's enough about me — what can I help you with today?",
+      "tool_call": null
+    },
+    {
+      "step": 2,
+      "role": "user",
+      "text": "Hi."
+    },
     {
       "step": 3,
       "role": "ai",
-      "text": "Hey Ashwin, welcome back! Great to see you again. You last visited Dr. Priya Sharma, your chiropractor, on 15 May. Your lower back pain was at a 7 out of 10 then. How are you feeling today? Is the back doing better?",
+      "text": "Hey Ashwin, welcome back! Great to see you again. You last visited Dr. Priya Sharma, your chiropractor, on April 28th. Your lower back pain was at a 7 out of 10 then. How are you feeling today? Is the back doing better?",
       "tool_call": null
     },
     {
       "step": 4,
       "role": "user",
-      "text": "Back is a little better, maybe a 5 now"
+      "text": "Back is a little better, maybe a 5 now. But actually today I'm having some tooth pain and I wanted to see a dentist."
     },
     {
       "step": 5,
       "role": "ai",
-      "text": "Glad the back is improving! I am loging this in your heath general will help us in future",
-      "tool_call": {
-        "type": "log_journal",
-        "params": {
-          "raw_input": "Ashwin's Back is a little better, around 5/10"
-        }
-      }
-    },
-        {
-      "step": 3,
-      "role": "ai",
-      "text": "Hey Ashwin, do you have something more to converse about",
-      "tool_call": null
-    },
-    {
-      "step": 6,
-      "role": "user",
-      "text": "yah, actually today I'm having some tooth pain, on eating cold I am filling sharp sensetion"
-    },
-    {
-      "step": 7,
-      "role": "ai",
-      "text": "if pain not too sever, I can suggest you some home remedies",
-      "tool_call": null
-    },
-    {
-      "step": 8,
-      "role": "user",
-      "text": "No, It's sever pain I would like to consult with docter"
-    },
-    {
-      "step": 9,
-      "role": "ai",
-      "text": "Before I find you a dentist, I can see in your profile you do not have any medical insurance plan, if you have it add it in your profile will hep us to find best match for you",
-      "tool_call": null
-    },
-    {
-      "step": 10,
-      "role": "user",
-      "text": "done, I have added!"
-    },
-    {
-      "step": 11,
-      "role": "ai",
-      "text": "Now I can see your insurance coverage is BlueCross BlueShield PPO Plan. This plan covers dental consultations at 80% after your deductible. You are good to go. Let me find the best dentists available for you.",
-      "tool_call": null
-    },
-    {
-      "step": 12,
-      "role": "ai",
-      "text": "As per the location mentioned in your profile, I found the doctor Meera Joshi, her clinik is just 2 miles away from your home, would you me like to book appointment with her?",
+      "text": "Glad the back is improving! Tooth pain can be really uncomfortable — let's get that sorted. Before I find you a dentist, let me pull up your profile. I can see your insurance coverage is BlueCross BlueShield PPO Plan. This plan covers dental consultations at 80% after your deductible. You are good to go. Let me find the best dentists available for you.",
       "tool_call": {
         "type": "search_doctors",
         "params": {
@@ -74,114 +34,103 @@
       }
     },
     {
-      "step": 13,
+      "step": 6,
       "role": "user",
-      "text": "Yes, book with Dr. Meera."
+      "text": "Yes, book with Dr. Sneha."
     },
     {
-      "step": 14,
+      "step": 7,
       "role": "ai",
-      "text": "Before I confirm the booking, let me just collect a few quick details so Dr. Meera is fully prepared before your appointment. First — do you have any known allergies? Especially to any medications or anaesthesia?",
+      "text": "Before I confirm the booking, let me just collect a few quick details so Dr. Sneha is fully prepared before your appointment. First — do you have any known allergies? Especially to any medications or anaesthesia?",
       "tool_call": null
     },
     {
-      "step": 15,
+      "step": 8,
       "role": "user",
       "text": "Yes, I'm allergic to penicillin."
     },
     {
-      "step": 16,
+      "step": 9,
       "role": "ai",
       "text": "Got it, penicillin allergy noted. Are you currently taking any medications?",
-      "tool_call": {
-        "type": "log_journal",
-        "params": {
-          "raw_input": "Ashwin's is penicillin"
-        }
-      }
+      "tool_call": null
     },
     {
-      "step": 17,
+      "step": 10,
       "role": "user",
       "text": "Yes I'm on Ibuprofen 400mg twice a day that Dr. Priya prescribed, and Vitamin D3."
     },
     {
-      "step": 18,
+      "step": 11,
       "role": "ai",
       "text": "Noted — Ibuprofen 400mg and Vitamin D3. Last question — any recent medical conditions or ongoing health issues Dr. Sneha should know about before the appointment?",
-      "tool_call": {
-        "type": "log_journal",
-        "params": {
-          "raw_input": "Ashwin's is taking Ibuprofen 400mg and Vitamin D3. sugested by his chiropractor "
-        }
-      }
-
+      "tool_call": null
     },
     {
-      "step": 19,
+      "step": 12,
       "role": "user",
       "text": "Just the lower back issue and some anxiety."
     },
     {
-      "step": 20,
+      "step": 13,
       "role": "ai",
       "text": "Perfect, I have everything. I am preparing a pre-appointment health summary for Dr. Sneha right now — your allergy, current medications, and health background. She will have this before you even walk in. Now, what day and time works for your appointment?",
       "tool_call": null
     },
     {
-      "step": 21,
+      "step": 14,
       "role": "user",
-      "text": "check if she is available for This Friday at 3 PM."
+      "text": "This Friday at 3 PM."
     },
     {
-      "step": 22,
+      "step": 15,
       "role": "ai",
-      "text": "Hey Ashwin, I checked your calendar But you actually have your follow-up with Dr. Priya Sharma this Friday at 3 PM for your back. You cannot have both at the same time. Would you like to book Dr. Sneha at a different time on Friday, or a different day entirely?",
+      "text": "Ashwin, I checked your calendar and you actually have your follow-up with Dr. Priya Sharma this Friday at 3 PM for your back. You cannot have both at the same time. Would you like to book Dr. Sneha at a different time on Friday, or a different day entirely?",
       "tool_call": null
     },
     {
-      "step": 23,
+      "step": 16,
       "role": "user",
       "text": "Book her for Friday 5 PM."
     },
     {
-      "step": 24,
+      "step": 17,
       "role": "ai",
-      "text": "Perfect. Dr. Meera Joshi, Dentist, this Friday at 5 PM — with your allergy and medication notes already sent to her. Confirming now.",
+      "text": "Perfect. Dr. Sneha Kulkarni, Dentist, this Friday at 5 PM — with your allergy and medication notes already sent to her. Confirming now.",
       "tool_call": {
         "type": "book_appointment",
         "params": {
           "doctor_name": "Dr. Sneha Kulkarni",
-          "date": "2026-05-22",
+          "date": "2025-05-02",
           "time": "5:00 PM",
           "reason": "Tooth pain and cold sensitivity"
         }
       }
     },
     {
-      "step": 25,
+      "step": 18,
       "role": "ai",
       "text": "Done! You are all set. Dr. Priya at 3 PM for your back, Dr. Sneha at 5 PM for your teeth. Both are on your calendar and both doctors have your pre-appointment health summary. Anything else you need today?",
       "tool_call": null
     },
     {
-      "step": 26,
+      "step": 19,
       "role": "user",
       "text": "Actually yes, let me log today's update."
     },
     {
-      "step": 27,
+      "step": 20,
       "role": "ai",
       "text": "Of course — go ahead, tell me how you are feeling today.",
       "tool_call": null
     },
     {
-      "step": 28,
+      "step": 21,
       "role": "user",
       "text": "Back pain is around 5 today, much better than last week. Slept around 6 hours. Tooth pain is a 6, especially when I drink something cold. Feeling a bit tired but anxiety is a little less than before."
     },
     {
-      "step": 29,
+      "step": 22,
       "role": "ai",
       "text": "Got it, I have logged that for you.",
       "tool_call": {
@@ -192,40 +141,40 @@
       }
     },
     {
-      "step": 30,
+      "step": 23,
       "role": "ai",
       "text": "Today's entry saved — back pain 5 out of 10, improving. Tooth pain 6 out of 10, cold sensitivity. Sleep 6 hours, energy low, anxiety mild. Dr. Priya and Dr. Sneha will both be able to see this before your Friday appointments. You are doing well Ashwin — the trend is moving in the right direction.",
       "tool_call": null
     },
     {
-      "step": 31,
+      "step": 24,
       "role": "user",
       "text": "Actually wait, cancel my appointment on Friday."
     },
     {
-      "step": 32,
+      "step": 25,
       "role": "ai",
       "text": "You have two appointments this Friday — Dr. Priya Sharma at 3 PM for your back, and Dr. Sneha Kulkarni at 5 PM for your teeth. Which one would you like to cancel?",
       "tool_call": null
     },
     {
-      "step": 33,
+      "step": 26,
       "role": "user",
       "text": "Cancel the dentist one."
     },
     {
-      "step": 34,
+      "step": 27,
       "role": "ai",
       "text": "Just confirming — you want to cancel Dr. Sneha Kulkarni on Friday at 5 PM. Should I go ahead?",
       "tool_call": null
     },
     {
-      "step": 35,
+      "step": 28,
       "role": "user",
       "text": "Yes."
     },
     {
-      "step": 36,
+      "step": 29,
       "role": "ai",
       "text": "Done. Dr. Sneha's appointment has been cancelled. Your appointment with Dr. Priya at 3 PM is still confirmed. Would you like to reschedule the dentist for another day?",
       "tool_call": {
@@ -236,12 +185,12 @@
       }
     },
     {
-      "step": 37,
+      "step": 30,
       "role": "user",
       "text": "No that's fine for now, thanks."
     },
     {
-      "step": 38,
+      "step": 31,
       "role": "ai",
       "text": "Anytime Ashwin. To recap today — your follow-up with Dr. Priya is confirmed for Friday at 3 PM, your health journal is updated, and your pre-appointment notes are ready for her. RedApple is always here whenever you need it — whether it is booking, tracking your health, or just talking through how you are feeling. Take care and hope the back continues to improve!",
       "tool_call": null

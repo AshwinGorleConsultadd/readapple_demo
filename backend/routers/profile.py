@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, UploadFile, File
 from database.connection import get_db
 
 router = APIRouter(prefix="/profile", tags=["profile"])
@@ -14,3 +14,13 @@ async def get_profile():
         raise HTTPException(status_code=404, detail="Patient profile not found")
     patient["_id"] = str(patient["_id"])
     return patient
+
+
+@router.post("/insurance")
+async def upload_insurance(file: UploadFile = File(...)):
+    if not file.filename.lower().endswith(".pdf"):
+        raise HTTPException(status_code=400, detail="Only PDF files are accepted")
+    content = await file.read()
+    with open("/tmp/insurance_upload.pdf", "wb") as f:
+        f.write(content)
+    return {"uploaded": True}
