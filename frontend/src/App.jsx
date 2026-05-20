@@ -11,11 +11,24 @@ import ConversationRecording from './pages/ConversationRecording'
 import PatientNotes from './pages/PatientNotes'
 import DoctorNotes from './pages/DoctorNotes'
 import { useConversation } from './hooks/useConversation'
+import { useStaticConversation } from './hooks/useStaticConversation'
 
 export default function App() {
   const conversation = useConversation()
   const [greetingData, setGreetingData] = useState(null)
   const greetingLoadedRef = useRef(false)
+
+  // Lifted here so they survive tab switches
+  const [isStaticMode, setIsStaticMode] = useState(false)
+  const [voiceEnabled, setVoiceEnabled] = useState(
+    () => localStorage.getItem('redapple_voice') !== 'off'
+  )
+
+  const staticConversation = useStaticConversation({
+    addMessage: conversation.addMessage,
+    clearMessages: conversation.clearMessages,
+    voiceEnabled,
+  })
 
   useEffect(() => {
     if (greetingLoadedRef.current) return
@@ -27,7 +40,17 @@ export default function App() {
     <BrowserRouter>
       <div className="relative">
         <Routes>
-          <Route path="/" element={<Home conversation={conversation} greetingData={greetingData} />} />
+          <Route path="/" element={
+            <Home
+              conversation={conversation}
+              greetingData={greetingData}
+              isStaticMode={isStaticMode}
+              setIsStaticMode={setIsStaticMode}
+              staticConversation={staticConversation}
+              voiceEnabled={voiceEnabled}
+              setVoiceEnabled={setVoiceEnabled}
+            />
+          } />
           <Route path="/dockters" element={<Dockters />} />
           <Route path="/dockters/:id" element={<DockterProfile />} />
           <Route path="/appointments" element={<Appointments />} />

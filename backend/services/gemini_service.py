@@ -26,6 +26,9 @@ _SYSTEM_TEMPLATE = """You are Redapple AI — a warm, intelligent voice health a
 
 Your personality: friendly, empathetic, concise. You speak like a helpful health companion, not a robot.
 
+Today's date: {today_date} ({today_weekday})
+When the patient says "this Friday", "next Monday", "tomorrow" etc., calculate the exact YYYY-MM-DD date relative to today's date above and use that in tool calls.
+
 Patient context:
 {patient_profile}
 
@@ -53,6 +56,11 @@ Rules:
 
 
 def _build_system_prompt(patient_context: dict, recent_journal: list) -> str:
+    from datetime import date
+    today = date.today()
+    today_date = today.isoformat()           # e.g. 2026-05-20
+    today_weekday = today.strftime("%A")     # e.g. Tuesday
+
     patient_name = patient_context.get("name", "the patient")
     profile_lines = [
         f"Name: {patient_context.get('name', '')}",
@@ -69,6 +77,8 @@ def _build_system_prompt(patient_context: dict, recent_journal: list) -> str:
             f"(pain {parsed.get('pain_level', '?')}/10, mood: {parsed.get('mood', '?')})"
         )
     return _SYSTEM_TEMPLATE.format(
+        today_date=today_date,
+        today_weekday=today_weekday,
         patient_name=patient_name,
         patient_profile="\n".join(profile_lines),
         recent_journal_summary="\n".join(journal_lines) if journal_lines else "No recent entries.",

@@ -35,6 +35,7 @@ export default function ConversationRecording() {
   }, [appointmentId])
 
   const doctorId = appointment?.doctor_id
+  const meetLink = appointment?.google_meet_link
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
@@ -56,7 +57,8 @@ export default function ConversationRecording() {
       </header>
 
       <div className="flex-1 overflow-y-auto px-4 py-4 pb-24 max-w-md mx-auto w-full space-y-4">
-        {/* Appointment info */}
+
+        {/* 1 — Appointment info card */}
         {!apptLoading && appointment && (
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
             <div className="flex items-center gap-3">
@@ -66,11 +68,34 @@ export default function ConversationRecording() {
               <div>
                 <p className="font-semibold text-gray-900 text-sm">{appointment.doctor_name}</p>
                 <p className="text-[#00B5C8] text-xs">{appointment.doctor_specialty}</p>
-                <p className="text-gray-400 text-xs">
-                  {appointment.date} · {appointment.time}
-                </p>
+                <p className="text-gray-400 text-xs">{appointment.date} · {appointment.time}</p>
               </div>
             </div>
+          </div>
+        )}
+
+        {/* 2 — Google Meet card */}
+        {!apptLoading && appointment && (
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center shrink-0">
+                <svg className="w-5 h-5 text-green-600" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M17 10.5V7a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h12a1 1 0 001-1v-3.5l4 4v-11l-4 4z"/>
+                </svg>
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-gray-900">Google Meet</p>
+                <p className="text-xs text-gray-400">Video consultation link</p>
+              </div>
+            </div>
+            <a
+              href={meetLink || '#'}
+              target={meetLink ? '_blank' : undefined}
+              rel="noreferrer"
+              className="px-4 py-2 bg-[#00B5C8] text-white text-xs font-semibold rounded-xl active:opacity-80"
+            >
+              Join
+            </a>
           </div>
         )}
 
@@ -91,11 +116,6 @@ export default function ConversationRecording() {
         {/* State: idle / recording / processing */}
         {['idle', 'recording', 'processing'].includes(recordingState) && (
           <>
-            {recordingState === 'idle' && (
-              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 text-sm text-gray-500 text-center leading-relaxed">
-                The conversation will be recorded and analysed by AI to generate notes for you and your doctor.
-              </div>
-            )}
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex justify-center">
               <RecordingControls
                 recordingState={recordingState}
@@ -104,10 +124,43 @@ export default function ConversationRecording() {
                 onStop={stopRecording}
               />
             </div>
+
+            {/* Transcript paste box — always visible in idle */}
+            {recordingState === 'idle' && (
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="flex-1 h-px bg-gray-200" />
+                  <span className="text-xs text-gray-400">or paste transcript directly</span>
+                  <div className="flex-1 h-px bg-gray-200" />
+                </div>
+                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+                  <h3 className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                    <svg className="w-4 h-4 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    Conversation Transcript
+                  </h3>
+                  <textarea
+                    value={transcript}
+                    onChange={(e) => setTranscript(e.target.value)}
+                    placeholder="Paste or type the conversation transcript here..."
+                    rows={8}
+                    className="w-full text-sm text-gray-600 leading-relaxed resize-none border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-[#00B5C8]"
+                  />
+                </div>
+                <button
+                  onClick={() => submitManualTranscript(transcript)}
+                  disabled={!transcript.trim()}
+                  className="w-full py-3 bg-[#E24B4A] text-white rounded-2xl font-semibold text-sm disabled:opacity-40 active:opacity-80"
+                >
+                  Generate Notes →
+                </button>
+              </div>
+            )}
           </>
         )}
 
-        {/* State: transcript_ready */}
+        {/* State: transcript_ready (after recording) */}
         {recordingState === 'transcript_ready' && (
           <>
             <TranscriptDisplay
@@ -151,10 +204,7 @@ export default function ConversationRecording() {
                   View Doctor's Notes →
                 </button>
               )}
-              <button
-                onClick={reset}
-                className="w-full py-2 text-gray-400 text-sm"
-              >
+              <button onClick={reset} className="w-full py-2 text-gray-400 text-sm">
                 Record Another
               </button>
             </div>

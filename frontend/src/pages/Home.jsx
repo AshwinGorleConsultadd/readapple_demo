@@ -1,10 +1,9 @@
-import { useEffect, useCallback, useState, useRef } from 'react'
+import { useEffect, useCallback, useRef } from 'react'
 import PageHeader from '../components/layout/PageHeader'
 import ChatThread from '../components/chat/ChatThread'
 import VoiceButton from '../components/voice/VoiceButton'
 import StaticModeToggle from '../components/StaticModeToggle'
 import { useVoice } from '../hooks/useVoice'
-import { useStaticConversation } from '../hooks/useStaticConversation'
 import { sendMessage } from '../api/conversation'
 
 // module-level flag so greeting audio plays at most once per browser session
@@ -16,9 +15,7 @@ function SpeakerToggle({ enabled, onToggle }) {
       onClick={onToggle}
       title={enabled ? 'Voice responses ON — tap to mute' : 'Voice responses OFF — tap to unmute'}
       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
-        enabled
-          ? 'bg-[#00B5C8] text-white'
-          : 'bg-gray-100 text-gray-400'
+        enabled ? 'bg-[#00B5C8] text-white' : 'bg-gray-100 text-gray-400'
       }`}
     >
       {enabled ? (
@@ -35,15 +32,21 @@ function SpeakerToggle({ enabled, onToggle }) {
   )
 }
 
-export default function Home({ conversation, greetingData }) {
+export default function Home({
+  conversation,
+  greetingData,
+  isStaticMode,
+  setIsStaticMode,
+  staticConversation,
+  voiceEnabled,
+  setVoiceEnabled,
+}) {
   const { messages, isLoading, handleVoiceResponse, addMessage, clearMessages } = conversation
+  const { isStaticLoading, waitingForUser, startStaticConversation, handleUserSpoke, stopStaticConversation } = staticConversation
 
-  const [voiceEnabled, setVoiceEnabled] = useState(
-    () => localStorage.getItem('redapple_voice') !== 'off'
-  )
-  const [isStaticMode, setIsStaticMode] = useState(false)
-  // Ref so async callbacks can read current static mode without stale closure
-  const isStaticModeRef = useRef(false)
+  // Ref so async voice callback can read current static mode without stale closure
+  const isStaticModeRef = useRef(isStaticMode)
+  useEffect(() => { isStaticModeRef.current = isStaticMode }, [isStaticMode])
 
   const toggleVoice = useCallback(() => {
     setVoiceEnabled((prev) => {
@@ -52,22 +55,11 @@ export default function Home({ conversation, greetingData }) {
       if (!next && window.speechSynthesis) window.speechSynthesis.cancel()
       return next
     })
-  }, [])
-
-  const {
-    isStaticLoading,
-    waitingForUser,
-    startStaticConversation,
-    handleUserSpoke,
-    stopStaticConversation,
-  } = useStaticConversation({ addMessage, clearMessages, voiceEnabled })
-
-  // Keep ref in sync so the async voice callback can check mode without stale closure
-  useEffect(() => { isStaticModeRef.current = isStaticMode }, [isStaticMode])
+  }, [setVoiceEnabled])
 
   const handleVoiceResponseCallback = useCallback(
     (data) => {
-      if (isStaticModeRef.current) return // discard live AI response during static demo
+      if (isStaticModeRef.current) return // discard live AI response during CT mode
       handleVoiceResponse(data)
       if (voiceEnabled) playAudioReply(data.reply_audio_base64, data.reply_text)
     },
@@ -78,7 +70,7 @@ export default function Home({ conversation, greetingData }) {
   const { isListening, isAISpeaking, transcript, startListening, stopListening, playAudioReply, cancelSpeaking } =
     useVoice({ onResponse: handleVoiceResponseCallback })
 
-  // play greeting audio once — even if Home remounts (e.g. tab switch)
+  // Play greeting audio once per session (skip if CT mode is already on)
   useEffect(() => {
     if (!greetingData || greetingAudioPlayed || isStaticMode) return
     greetingAudioPlayed = true
@@ -87,7 +79,7 @@ export default function Home({ conversation, greetingData }) {
 
   const handleBookDoctor = useCallback(
     async (doctor) => {
-      if (isStaticMode) return // no live booking from static mode
+      if (isStaticMode) return
       const text = `Book an appointment with ${doctor.name}`
       addMessage('user', text)
       try {
@@ -107,24 +99,21 @@ export default function Home({ conversation, greetingData }) {
 
   const handleToggleStaticMode = useCallback(() => {
     if (isStaticMode) {
-      // Turn off — restore live mode
       stopStaticConversation()
       cancelSpeaking()
       clearMessages()
       setIsStaticMode(false)
       greetingAudioPlayed = false
     } else {
-      // Turn on — start static demo
       cancelSpeaking()
       setIsStaticMode(true)
       startStaticConversation()
     }
-  }, [isStaticMode, startStaticConversation, stopStaticConversation, cancelSpeaking, clearMessages])
+  }, [isStaticMode, setIsStaticMode, startStaticConversation, stopStaticConversation, cancelSpeaking, clearMessages])
 
   const handleVoicePress = () => {
     if (isStaticMode) {
       if (isListening) {
-        // User finished speaking — stop mic and advance script
         stopListening()
         handleUserSpoke()
       } else if (!isStaticLoading && waitingForUser) {
