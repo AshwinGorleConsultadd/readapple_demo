@@ -4,7 +4,7 @@
     {
       "step": 3,
       "role": "ai",
-      "text": "Hey Ashwin, welcome back! Great to see you again. You last visited Dr. Priya Sharma, your chiropractor, on 15 May. Your lower back pain was at a 7 out of 10 then. How are you feeling today? Is the back doing better?",
+      "text": "Hey Ashwin, welcome back! Great to see you again. You last visited Dr. Emily Carter, your chiropractor, on 15 May. Your lower back pain was at a 7 out of 10 then. How are you feeling today? Is the back doing better?",
       "tool_call": null
     },
     {
@@ -65,7 +65,7 @@
     {
       "step": 12,
       "role": "ai",
-      "text": "As per the location mentioned in your profile, I found the doctor Meera Joshi, her clinik is just 2 miles away from your home, would you me like to book appointment with her?",
+      "text": "As per the location mentioned in your profile, I found the doctor Jessica Coleman, her clinik is just 2 miles away from your home, would you me like to book appointment with her?",
       "tool_call": {
         "type": "search_doctors",
         "params": {
@@ -76,12 +76,12 @@
     {
       "step": 13,
       "role": "user",
-      "text": "Yes, book with Dr. Meera."
+      "text": "Yes, let's book with Dr. Jessica."
     },
     {
       "step": 14,
       "role": "ai",
-      "text": "Before I confirm the booking, let me just collect a few quick details so Dr. Meera is fully prepared before your appointment. First — do you have any known allergies? Especially to any medications or anaesthesia?",
+      "text": "Before I confirm the booking, let me just collect a few quick details so Dr. Jessica is fully prepared before your appointment. First — do you have any known allergies? Especially to any medications or anaesthesia?",
       "tool_call": null
     },
     {
@@ -103,12 +103,12 @@
     {
       "step": 17,
       "role": "user",
-      "text": "Yes I'm on Ibuprofen 400mg twice a day that Dr. Priya prescribed, and Vitamin D3."
+      "text": "Yes I'm on Ibuprofen 400mg twice a day that Dr. Emily prescribed in last call, and also Vitamin D3."
     },
     {
       "step": 18,
       "role": "ai",
-      "text": "Noted — Ibuprofen 400mg and Vitamin D3. Last question — any recent medical conditions or ongoing health issues Dr. Meera should know about before the appointment?",
+      "text": "Noted — Ibuprofen 400mg and Vitamin D3. Last question — any recent medical conditions or ongoing health issues Dr. Jessica should know about before the appointment?",
       "tool_call": {
         "type": "log_journal",
         "params": {
@@ -125,7 +125,7 @@
     {
       "step": 20,
       "role": "ai",
-      "text": "Perfect, I have everything. I am preparing a pre-appointment health summary for Dr. Meera right now — your allergy, current medications, and health background. She will have this before you even walk in. Now, what day and time works for your appointment?",
+      "text": "Perfect, I have everything. I am preparing a pre-appointment health summary for Dr. Jessica right now — your allergy, current medications, and health background. She will have this before you even walk in. Now, what day and time works for your appointment?",
       "tool_call": null
     },
     {
@@ -136,7 +136,7 @@
     {
       "step": 22,
       "role": "ai",
-      "text": "Hey Ashwin, I checked your calendar But you actually have your follow-up with Dr. Priya Sharma this Friday at 3 PM for your back. You cannot have both at the same time. Would you like to book Dr. Meera at a different time on Friday, or a different day entirely?",
+      "text": "Hey Ashwin, I checked your calendar But you actually have your follow-up with Dr. Emily Carter this Friday at 3 PM for your back. You cannot have both at the same time. Would you like to book Dr. Jessica at a different time on Friday, or a different day entirely?",
       "tool_call": null
     },
     {
@@ -147,12 +147,12 @@
     {
       "step": 24,
       "role": "ai",
-      "text": "Perfect. Dr. Meera Joshi, Dentist, this Friday at 5 PM — with your allergy and medication notes already sent to her. Confirming now.",
+      "text": "Perfect. Dr. Jessica Coleman, Dentist, this Friday at 5 PM — with your allergy and medication notes already sent to her. Confirming now.",
       "tool_call": {
         "type": "book_appointment",
         "params": {
-          "doctor_name": "Dr. Meera Joshi",
-          "date": "2026-05-22",
+          "doctor_name": "Dr. Jessica Coleman",
+          "date": "2026-05-29",
           "time": "5:00 PM",
           "reason": "Tooth pain and cold sensitivity"
         }
@@ -161,7 +161,7 @@
     {
       "step": 25,
       "role": "ai",
-      "text": "Done! You are all set. Dr. Priya at 3 PM for your back, Dr. Meera at 5 PM for your teeth. Both are on your calendar and both doctors have your pre-appointment health summary. Anything else you need today?",
+      "text": "Done! You are all set. Dr. Emily at 3 PM for your back, Dr. Jessica at 5 PM for your teeth. Both are on your calendar and both doctors have your pre-appointment health summary. Anything else you need today?",
       "tool_call": null
     },
     {
@@ -194,7 +194,7 @@
     {
       "step": 30,
       "role": "ai",
-      "text": "Today's entry saved — back pain 5 out of 10, improving. Tooth pain 6 out of 10, cold sensitivity. Sleep 6 hours, energy low, anxiety mild. Dr. Priya and Dr. Meera will both be able to see this before your Friday appointments. You are doing well Ashwin — the trend is moving in the right direction.",
+      "text": "Today's entry saved — back pain 5 out of 10, improving. Tooth pain 6 out of 10, cold sensitivity. Sleep 6 hours, energy low, anxiety mild. Dr. Emily and Dr. Jessica will both be able to see this before your Friday appointments. You are doing well Ashwin — the trend is moving in the right direction.",
       "tool_call": null
     },
     {
@@ -205,7 +205,7 @@
     {
       "step": 32,
       "role": "ai",
-      "text": "You have two appointments this Friday — Dr. Priya Sharma at 3 PM for your back, and Dr. Meera Kulkarni at 5 PM for your teeth. Which one would you like to cancel?",
+      "text": "You have two appointments this Friday — Dr. Emily Carter at 3 PM for your back, and Dr. Jessica Coleman at 5 PM for your teeth. Which one would you like to cancel?",
       "tool_call": null
     },
     {
@@ -216,7 +216,7 @@
     {
       "step": 34,
       "role": "ai",
-      "text": "Just confirming — you want to cancel Dr. Meera Kulkarni on Friday at 5 PM. Should I go ahead?",
+      "text": "Just confirming — you want to cancel Dr. Jessica Coleman on Friday at 5 PM. Should I go ahead?",
       "tool_call": null
     },
     {
@@ -227,11 +227,11 @@
     {
       "step": 36,
       "role": "ai",
-      "text": "Done. Dr. Meera's appointment has been cancelled. Your appointment with Dr. Priya at 3 PM is still confirmed. Would you like to reschedule the dentist for another day?",
+      "text": "Done. Dr. Jessica's appointment has been cancelled. Your appointment with Dr. Emily at 3 PM is still confirmed. Would you like to reschedule the dentist for another day?",
       "tool_call": {
         "type": "cancel_appointment",
         "params": {
-          "doctor_name": "Dr. Meera Kulkarni"
+          "doctor_name": "Dr. Jessica Coleman"
         }
       }
     },
@@ -243,7 +243,7 @@
     {
       "step": 38,
       "role": "ai",
-      "text": "Anytime Ashwin. To recap today — your follow-up with Dr. Priya is confirmed for Friday at 3 PM, your health journal is updated, and your pre-appointment notes are ready for her. RedApple is always here whenever you need it — whether it is booking, tracking your health, or just talking through how you are feeling. Take care and hope the back continues to improve!",
+      "text": "Anytime Ashwin. To recap today — your follow-up with Dr. Emily is confirmed for Friday at 3 PM, your health journal is updated, and your pre-appointment notes are ready for her. RedApple is always here whenever you need it — whether it is booking, tracking your health, or just talking through how you are feeling. Take care and hope the back continues to improve!",
       "tool_call": null
     }
   ]

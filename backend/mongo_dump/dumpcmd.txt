@@ -1,0 +1,22 @@
+# go to project backend
+cd "/path/to/your/project/backend"
+mkdir -p mongo_dump
+
+# ensure the dump file is present (e.g. copied to backend/mongo_dump/redapple.archive.gz)
+ls -lh mongo_dump/redapple.archive.gz
+
+# find the mongo container (docker-compose service name e.g. mongodb)
+CONTAINER=$(docker-compose -f docker-compose.yml ps -q mongodb)
+if [ -z "$CONTAINER" ]; then
+  CONTAINER=$(docker ps --filter "ancestor=mongo" --format "{{.Names}}" | head -n1)
+fi
+[ -z "$CONTAINER" ] && { echo "mongo container not found"; exit 1; }
+
+# copy the archive into the mongo container
+docker cp mongo_dump/redapple.archive.gz "$CONTAINER":/tmp/redapple.archive.gz
+
+# restore inside the container (use the target's auth URI; replace with real URI or credentials)
+docker exec -it "$CONTAINER" bash -c "mongorestore --archive=/tmp/redapple.archive.gz --gzip --drop --uri='mongodb://admin:password@localhost:27017/redapple?authSource=admin'"
+
+# verify
+docker exec -it "$CONTAINER" bash -c "mongosh --eval 'show dbs; db.getSiblingDB(\"redapple\").getCollectionNames()'"
